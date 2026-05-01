@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaUsers, FaUserPlus, FaMoneyBillWave, FaBars, FaChevronLeft } from "react-icons/fa";
+import { FaHome, FaUsers, FaUserPlus, FaMoneyBillWave, FaBars, FaChevronLeft, FaDoorOpen } from "react-icons/fa";
 
 function Sidebar({ isOpen, toggleSidebar }) {
     return (
@@ -25,6 +25,12 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 <li>
                     <Link to="/" className="nav-link menu-link">
                         <FaHome size={20} /> <span className={isOpen ? "" : "d-none"}>Dashboard</span>
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/rooms" className="nav-link menu-link">
+                        <FaDoorOpen size={20} /> <span className={isOpen ? "" : "d-none"}>Rooms</span>
                     </Link>
                 </li>
 

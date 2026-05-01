@@ -347,4 +347,473 @@ body.dark-mode .dropdown-divider {
 
 .auth-card {
     animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
+}
+
+/* Product Pages */
+.page-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: linear-gradient(135deg, #ffffff 0%, #eef6ff 54%, #ecfdf5 100%);
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.07);
+}
+
+.page-header.compact {
+    align-items: flex-start;
+}
+
+.eyebrow {
+    color: #2563eb;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+}
+
+.page-header h2 {
+    color: #0f172a;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.page-subtitle {
+    color: #64748b;
+    margin: 8px 0 0;
+}
+
+.primary-action {
+    align-items: center;
+    background: #0f172a;
+    border: 0;
+    border-radius: 8px;
+    color: #ffffff;
+    display: inline-flex;
+    font-weight: 700;
+    gap: 10px;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 18px;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.primary-action:hover,
+.primary-action:focus {
+    background: #1d4ed8;
+    color: #ffffff;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
+    transform: translateY(-1px);
+}
+
+.primary-action.wide {
+    width: 100%;
+}
+
+.metric-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric-card {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 42px 1fr;
+    padding: 18px;
+}
+
+.metric-card svg {
+    align-items: center;
+    background: #dbeafe;
+    border-radius: 8px;
+    color: #1d4ed8;
+    display: flex;
+    font-size: 42px;
+    grid-row: span 2;
+    padding: 10px;
+}
+
+.metric-card span {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.metric-card strong {
+    color: #0f172a;
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.metric-card.success svg {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.metric-card.warning svg {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.toolbar-panel {
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    padding: 14px;
+}
+
+.search-control {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #64748b;
+    display: flex;
+    gap: 10px;
+    min-height: 42px;
+    padding: 0 14px;
+    width: min(360px, 100%);
+}
+
+.search-control input {
+    background: transparent;
+    border: 0;
+    color: #0f172a;
+    outline: 0;
+    width: 100%;
+}
+
+.segmented-control {
+    background: #f1f5f9;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+}
+
+.segmented-control button {
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: #64748b;
+    font-size: 0.82rem;
+    font-weight: 800;
+    min-height: 34px;
+    padding: 0 12px;
+    text-transform: capitalize;
+}
+
+.segmented-control button.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.alert-panel,
+.empty-state {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    color: #9a3412;
+    font-weight: 700;
+    padding: 16px;
+}
+
+.empty-state {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    color: #64748b;
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.room-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.room-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 250px;
+    padding: 20px;
+    position: relative;
+}
+
+.room-card-top,
+.room-meta,
+.occupancy-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.room-label {
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.room-card h3 {
+    color: #0f172a;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.room-meta,
+.occupancy-row {
+    color: #64748b;
+    font-weight: 700;
+}
+
+.occupancy-row strong {
+    color: #15803d;
+}
+
+.status-pill {
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    padding: 7px 10px;
+}
+
+.status-pill.available {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-pill.full {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-pill.inactive {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.progress-track {
+    background: #e2e8f0;
+    border-radius: 999px;
+    height: 9px;
+    overflow: hidden;
+}
+
+.progress-track span {
+    background: linear-gradient(90deg, #2563eb, #10b981);
+    display: block;
+    height: 100%;
+}
+
+.bed-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.bed-dots button {
+    background: #22c55e;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    height: 13px;
+    padding: 0;
+    width: 13px;
+}
+
+.bed-dots button.occupied {
+    background: #ef4444;
+}
+
+.bed-dots button.inactive {
+    background: #94a3b8;
+}
+
+.bed-dots button:focus {
+    outline: 3px solid rgba(37, 99, 235, 0.2);
+    outline-offset: 3px;
+}
+
+.icon-danger {
+    align-items: center;
+    background: #fff1f2;
+    border: 0;
+    border-radius: 8px;
+    bottom: 16px;
+    color: #be123c;
+    display: flex;
+    height: 36px;
+    justify-content: center;
+    position: absolute;
+    right: 16px;
+    width: 36px;
+}
+
+.form-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 920px;
+    padding: 24px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-block span {
+    align-items: center;
+    color: #334155;
+    display: flex;
+    font-weight: 800;
+    gap: 8px;
+}
+
+.input-block input {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #0f172a;
+    min-height: 46px;
+    outline: none;
+    padding: 0 14px;
+}
+
+.input-block input:focus {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.bed-preview {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.bed-preview > span {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.bed-preview div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bed-preview i {
+    background: #dcfce7;
+    border-radius: 999px;
+    color: #15803d;
+    font-style: normal;
+    font-weight: 800;
+    padding: 7px 11px;
+}
+
+body.dark-mode .page-header,
+body.dark-mode .metric-card,
+body.dark-mode .toolbar-panel,
+body.dark-mode .room-card,
+body.dark-mode .form-panel {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .page-header h2,
+body.dark-mode .metric-card strong,
+body.dark-mode .room-card h3,
+body.dark-mode .search-control input,
+body.dark-mode .input-block input {
+    color: #f8fafc;
+}
+
+body.dark-mode .page-subtitle,
+body.dark-mode .metric-card span,
+body.dark-mode .room-meta,
+body.dark-mode .occupancy-row,
+body.dark-mode .room-label,
+body.dark-mode .input-block span {
+    color: #cbd5e1;
+}
+
+body.dark-mode .search-control,
+body.dark-mode .segmented-control,
+body.dark-mode .input-block input,
+body.dark-mode .bed-preview {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+@media (max-width: 1100px) {
+    .metric-grid,
+    .room-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .page-header,
+    .toolbar-panel {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .metric-grid,
+    .room-grid,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-header h2 {
+        font-size: 1.6rem;
+    }
+}

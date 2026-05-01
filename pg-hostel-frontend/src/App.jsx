@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import TenantList from "./pages/TenantList";
 import AddTenant from "./pages/AddTenant";
 import RentList from "./pages/RentList";
+import RoomList from "./pages/rooms/RoomList";
+import AddRoom from "./pages/rooms/AddRoom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -44,6 +46,16 @@ function App() {
                         <RentList />
                     </ProtectedRoute>
                 } />
+                <Route path="/rooms" element={
+                    <ProtectedRoute>
+                        <RoomList />
+                    </ProtectedRoute>
+                } />
+                <Route path="/rooms/add" element={
+                    <ProtectedRoute>
+                        <AddRoom />
+                    </ProtectedRoute>
+                } />
 
                 {/* Redirect any unknown routes to home */}
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -52,4 +64,4 @@ function App() {
     );
 }
 
-export default App;
+export default App;

@@ -10,6 +10,7 @@ function Navbar() {
     const navigate = useNavigate();
 
     const user = authService.getCurrentUser();
+    const displayName = user?.fullName || "Admin";
 
     const handleLogout = () => {
         authService.logout();
@@ -41,14 +42,14 @@ function Navbar() {
             <h4 className="mb-0 ms-4">Dashboard</h4>
 
             <div className="d-flex align-items-center gap-3 position-relative" ref={dropdownRef}>
-                <span className="text-muted d-none d-md-block">Welcome, {user?.username || "Admin"}</span>
+                <span className="text-muted d-none d-md-block">Welcome, {displayName}</span>
                 
                 <div 
                     className="avatar cursor-pointer" 
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                     style={{ cursor: "pointer" }}
                 >
-                    {user?.username ? user.username.charAt(0).toUpperCase() : "A"}
+                    {displayName.charAt(0).toUpperCase()}
                 </div>
 
                 {/* Profile Dropdown */}
@@ -58,7 +59,7 @@ function Navbar() {
                         <div className="px-3 py-2 border-bottom d-flex align-items-center gap-3">
                             <FaUserCircle size={32} className="text-secondary" />
                             <div>
-                                <h6 className="mb-0">{user?.username || "Admin"}</h6>
+                                <h6 className="mb-0">{displayName}</h6>
                                 <small className="text-muted">{user?.email || "admin@staynest.com"}</small>
                             </div>
                         </div>
@@ -95,4 +96,4 @@ function Navbar() {
     );
 }
 
-export default Navbar;
+export default Navbar;

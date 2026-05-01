@@ -17,7 +17,7 @@ function Login() {
             await authService.login(email, password);
             navigate("/");
         } catch (err) {
-            setError("Invalid email or password");
+            setError(err.message || "Invalid email or password");
         } finally {
             setLoading(false);
         }

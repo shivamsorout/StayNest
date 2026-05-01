@@ -45,8 +45,12 @@ public class AuthService {
             throw new RuntimeException("Email already exists!");
         }
 
+        if (request.getFullName() == null || request.getFullName().isBlank()) {
+            throw new RuntimeException("Full name is required!");
+        }
+
         User user = new User();
-        user.setFullName(request.getFullName());
+        user.setFullName(request.getFullName().trim());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("ADMIN"); // Default role

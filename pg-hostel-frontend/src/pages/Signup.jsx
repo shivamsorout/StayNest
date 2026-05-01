@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../services/auth";
 
 function Signup() {
-    const [username, setUsername] = useState("");
+    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,11 +17,11 @@ function Signup() {
         setSuccess("");
         setLoading(true);
         try {
-            await authService.signup(username, email, password);
+            await authService.signup(fullName, email, password);
             setSuccess("Account created successfully! Redirecting to login...");
             setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
-            setError("Signup failed. Try again.");
+            setError(err.message || "Signup failed. Try again.");
         } finally {
             setLoading(false);
         }
@@ -38,13 +38,13 @@ function Signup() {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group-custom">
-                        <label>Username</label>
+                        <label>Full Name</label>
                         <input 
                             type="text" 
                             className="form-control-custom" 
-                            placeholder="johndoe"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="John Doe"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
                             required
                         />
                     </div>
