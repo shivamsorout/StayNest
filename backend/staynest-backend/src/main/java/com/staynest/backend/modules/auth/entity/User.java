@@ -25,4 +25,8 @@ public class User extends BaseEntity {
     private String password;
 
     private String role = "ADMIN";
+
+    private String passwordResetOtp;
+
+    private java.time.LocalDateTime passwordResetOtpExpiresAt;
 }

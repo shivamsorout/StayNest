@@ -8,9 +8,9 @@ function Layout({ children }) {
     const toggleSidebar = () => setIsOpen(!isOpen);
 
     return (
-        <div className="d-flex">
+        <div className={`app-shell ${isOpen ? "sidebar-expanded" : "sidebar-collapsed"}`}>
             <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
-            <div className="main-content" style={{ transition: '0.3s', flex: 1, minWidth: 0 }}>
+            <div className="main-content">
                 <Navbar />
                 <div className="p-4">{children}</div>
             </div>

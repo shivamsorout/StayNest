@@ -21,6 +21,10 @@ public class EmailService {
 
     public void sendSimpleEmail(String toEmail, String subject, String body) {
         try {
+            if (fromEmail == null || fromEmail.isBlank()) {
+                throw new RuntimeException("Email service is not configured. Please set MAIL_USERNAME and MAIL_PASSWORD.");
+            }
+
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail.trim());
             message.setTo(toEmail);

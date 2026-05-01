@@ -9,8 +9,16 @@ export const authService = {
         return authApi.signup(fullName, email, password);
     },
     
-    async forgotPassword(email) {
-        return authApi.forgotPassword(email);
+    async forgotPassword(payload) {
+        return authApi.forgotPassword(payload);
+    },
+
+    async resetPassword(payload) {
+        return authApi.resetPassword(payload);
+    },
+
+    async changePassword(payload) {
+        return authApi.changePassword(payload);
     },
 
     logout() {

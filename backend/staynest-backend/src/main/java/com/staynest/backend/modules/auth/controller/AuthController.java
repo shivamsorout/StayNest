@@ -1,8 +1,10 @@
 package com.staynest.backend.modules.auth.controller;
 
+import com.staynest.backend.modules.auth.dto.ChangePasswordRequest;
 import com.staynest.backend.modules.auth.dto.ForgotPasswordRequest;
 import com.staynest.backend.modules.auth.dto.LoginRequest;
 import com.staynest.backend.modules.auth.dto.LoginResponse;
+import com.staynest.backend.modules.auth.dto.ResetPasswordRequest;
 import com.staynest.backend.modules.auth.dto.SignupRequest;
 import com.staynest.backend.modules.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -21,6 +23,16 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
         return ResponseEntity.ok(authService.forgotPassword(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(authService.changePassword(request));
     }
 
     @PostMapping("/signup")
