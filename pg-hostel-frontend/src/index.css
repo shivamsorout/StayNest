@@ -2,10 +2,13 @@ body {
     margin: 0;
     background: #f8fafc;
     font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
 }
 
 .app-shell {
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
 .sidebar {
@@ -229,18 +232,24 @@ body {
 }
 
 .main-content {
-    width: 100%;
-    min-height: 100vh;
+    background: #f8fafc;
+    bottom: 0;
+    left: 260px;
     min-width: 0;
-    transition: margin-left 0.3s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: left 0.3s ease;
 }
 
 .sidebar-expanded .main-content {
-    margin-left: 260px;
+    left: 260px;
 }
 
 .sidebar-collapsed .main-content {
-    margin-left: 80px;
+    left: 80px;
 }
 
 .navbar-custom {
