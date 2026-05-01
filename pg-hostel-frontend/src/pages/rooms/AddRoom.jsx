@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBed, FaBuilding, FaDoorOpen, FaSave } from "react-icons/fa";
-import { roomApi } from "../../api/roomApi";
+import { roomApi } from "../../api/rooms/roomApi";
 
 function AddRoom() {
     const navigate = useNavigate();

@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
-import TenantList from "./pages/TenantList";
-import AddTenant from "./pages/AddTenant";
+import TenantList from "./pages/tenants/TenantList";
+import AddTenant from "./pages/tenants/AddTenant";
 import RentList from "./pages/RentList";
 import RoomList from "./pages/rooms/RoomList";
 import AddRoom from "./pages/rooms/AddRoom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import { authService } from "./services/auth";
 
 const ProtectedRoute = ({ children }) => {

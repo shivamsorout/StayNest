@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBed, FaDoorOpen, FaLayerGroup, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
-import { roomApi } from "../../api/roomApi";
+import { roomApi } from "../../api/rooms/roomApi";
 
 function RoomList() {
     const [rooms, setRooms] = useState([]);

@@ -1,7 +1,7 @@
 package com.staynest.backend.security;
 
-import com.staynest.backend.entity.User;
-import com.staynest.backend.repository.UserRepository;
+import com.staynest.backend.modules.auth.entity.User;
+import com.staynest.backend.modules.auth.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
