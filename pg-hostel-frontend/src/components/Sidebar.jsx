@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaChevronLeft, FaComments, FaDoorOpen, FaHome, FaIdBadge, FaMoneyBillWave, FaPaperPlane, FaTimes, FaUsers } from "react-icons/fa";
+import { authService } from "../services/auth";
 
 function Sidebar({ isOpen, toggleSidebar }) {
+    const currentUser = authService.getCurrentUser();
+    const isTenant = (currentUser?.role || "").trim().toUpperCase() === "TENANT";
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([
@@ -77,35 +80,41 @@ function Sidebar({ isOpen, toggleSidebar }) {
 
             <ul className="nav flex-column gap-2 sidebar-menu">
 
-                <li>
-                    <Link to="/" className="nav-link menu-link">
-                        <FaHome size={20} /> <span className={isOpen ? "" : "d-none"}>Dashboard</span>
-                    </Link>
-                </li>
+                {!isTenant && (
+                    <>
+                        <li>
+                            <Link to="/" className="nav-link menu-link">
+                                <FaHome size={20} /> <span className={isOpen ? "" : "d-none"}>Dashboard</span>
+                            </Link>
+                        </li>
 
-                <li>
-                    <Link to="/rooms" className="nav-link menu-link">
-                        <FaDoorOpen size={20} /> <span className={isOpen ? "" : "d-none"}>Rooms</span>
-                    </Link>
-                </li>
+                        <li>
+                            <Link to="/rooms" className="nav-link menu-link">
+                                <FaDoorOpen size={20} /> <span className={isOpen ? "" : "d-none"}>Rooms</span>
+                            </Link>
+                        </li>
 
-                <li>
-                    <Link to="/tenants" className="nav-link menu-link">
-                        <FaUsers size={20} /> <span className={isOpen ? "" : "d-none"}>Tenants</span>
-                    </Link>
-                </li>
+                        <li>
+                            <Link to="/tenants" className="nav-link menu-link">
+                                <FaUsers size={20} /> <span className={isOpen ? "" : "d-none"}>Tenants</span>
+                            </Link>
+                        </li>
 
-                <li>
-                    <Link to="/rent" className="nav-link menu-link">
-                        <FaMoneyBillWave size={20} /> <span className={isOpen ? "" : "d-none"}>Rent</span>
-                    </Link>
-                </li>
+                        <li>
+                            <Link to="/rent" className="nav-link menu-link">
+                                <FaMoneyBillWave size={20} /> <span className={isOpen ? "" : "d-none"}>Rent</span>
+                            </Link>
+                        </li>
+                    </>
+                )}
 
-                <li>
-                    <Link to="/my-profile" className="nav-link menu-link">
-                        <FaIdBadge size={20} /> <span className={isOpen ? "" : "d-none"}>My Profile</span>
-                    </Link>
-                </li>
+                {isTenant && (
+                    <li>
+                        <Link to="/my-profile" className="nav-link menu-link">
+                            <FaIdBadge size={20} /> <span className={isOpen ? "" : "d-none"}>My Profile</span>
+                        </Link>
+                    </li>
+                )}
 
             </ul>
 

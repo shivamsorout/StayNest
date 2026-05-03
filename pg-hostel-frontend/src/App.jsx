@@ -12,11 +12,29 @@ import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import { authService } from "./services/auth";
 
-const ProtectedRoute = ({ children }) => {
+const normalizeRole = (role) => (role || "").trim().toUpperCase();
+const roleOfCurrentUser = () => normalizeRole(authService.getCurrentUser()?.role);
+const isOwnerRole = (role) => role === "OWNER" || role === "ADMIN";
+
+const OwnerRoute = ({ children }) => {
     if (!authService.isAuthenticated()) {
         return <Navigate to="/login" replace />;
     }
-    return <Layout>{children}</Layout>;
+    return isOwnerRole(roleOfCurrentUser()) ? <Layout>{children}</Layout> : <Navigate to="/my-profile" replace />;
+};
+
+const ProfileRoute = () => {
+    if (!authService.isAuthenticated()) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return roleOfCurrentUser() === "TENANT" ? (
+        <Layout>
+            <TenantProfile />
+        </Layout>
+    ) : (
+        <Navigate to="/" replace />
+    );
 };
 
 function App() {
@@ -28,39 +46,35 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 
                 <Route path="/" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <Dashboard />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
                 <Route path="/tenants" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <TenantList />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
                 <Route path="/add-tenant" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <AddTenant />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
                 <Route path="/rent" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <RentList />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
-                <Route path="/my-profile" element={
-                    <ProtectedRoute>
-                        <TenantProfile />
-                    </ProtectedRoute>
-                } />
+                <Route path="/my-profile" element={<ProfileRoute />} />
                 <Route path="/rooms" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <RoomList />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
                 <Route path="/rooms/add" element={
-                    <ProtectedRoute>
+                    <OwnerRoute>
                         <AddRoom />
-                    </ProtectedRoute>
+                    </OwnerRoute>
                 } />
 
                 {/* Redirect any unknown routes to home */}

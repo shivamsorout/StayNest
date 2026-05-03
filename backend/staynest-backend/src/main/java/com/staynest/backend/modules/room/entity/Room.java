@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "rooms")
+@Table(
+        name = "rooms",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"pg_property_id", "room_no"})
+)
 @Getter
 @Setter
 @NoArgsConstructor

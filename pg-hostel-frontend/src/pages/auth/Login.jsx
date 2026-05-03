@@ -15,7 +15,8 @@ function Login() {
         setLoading(true);
         try {
             const user = await authService.login(email, password);
-            navigate(user?.role === "TENANT" ? "/my-profile" : "/");
+            const role = (user?.role || "").trim().toUpperCase();
+            navigate(role === "TENANT" ? "/my-profile" : "/");
         } catch (err) {
             setError(err.message || "Invalid email or password");
         } finally {

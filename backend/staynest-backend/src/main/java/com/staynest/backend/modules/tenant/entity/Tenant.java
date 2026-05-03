@@ -55,5 +55,6 @@ public class Tenant extends BaseEntity {
 
     private String photo;
 
+    @Lob
     private String idProofFile;
 }

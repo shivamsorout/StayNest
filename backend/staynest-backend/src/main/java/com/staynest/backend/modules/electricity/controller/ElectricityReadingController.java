@@ -5,6 +5,7 @@ import com.staynest.backend.modules.electricity.dto.ElectricityReadingResponse;
 import com.staynest.backend.modules.electricity.service.ElectricityReadingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/electricity")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyRole('OWNER','ADMIN')")
 public class ElectricityReadingController {
 
     private final ElectricityReadingService electricityReadingService;

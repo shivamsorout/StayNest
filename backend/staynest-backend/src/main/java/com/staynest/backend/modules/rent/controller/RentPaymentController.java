@@ -6,6 +6,7 @@ import com.staynest.backend.modules.rent.dto.RentPaymentResponse;
 import com.staynest.backend.modules.rent.service.RentPaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/rent")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyRole('OWNER','ADMIN')")
 public class RentPaymentController {
 
     private final RentPaymentService rentPaymentService;

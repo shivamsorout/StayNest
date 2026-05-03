@@ -6,6 +6,7 @@ import com.staynest.backend.modules.room.entity.Room;
 import com.staynest.backend.modules.room.entity.RoomStatus;
 import com.staynest.backend.modules.room.repository.BedRepository;
 import com.staynest.backend.modules.room.repository.RoomRepository;
+import com.staynest.backend.modules.tenant.dto.TenantAssignmentRequest;
 import com.staynest.backend.modules.tenant.dto.TenantRequest;
 import com.staynest.backend.modules.tenant.dto.TenantResponse;
 import com.staynest.backend.modules.tenant.entity.Tenant;
@@ -120,6 +121,30 @@ public class TenantService {
         return toResponse(tenantRepository.save(tenant));
     }
 
+    @Transactional
+    public TenantResponse assignBed(Long id, TenantAssignmentRequest request) {
+        Tenant tenant = findTenant(id);
+        Room newRoom = findRoom(request.getRoomId());
+        Bed newBed = findBedForRoom(newRoom, request.getBedId());
+
+        if (newBed.getStatus() != BedStatus.VACANT) {
+            throw new RuntimeException("Selected bed is already occupied");
+        }
+
+        if (tenant.getBed() != null) {
+            tenant.getBed().setStatus(BedStatus.VACANT);
+            refreshRoomOccupancy(tenant.getRoom());
+        }
+
+        tenant.setRoom(newRoom);
+        tenant.setBed(newBed);
+        tenant.setStatus(TenantStatus.ACTIVE);
+        newBed.setStatus(BedStatus.OCCUPIED);
+        refreshRoomOccupancy(newRoom);
+
+        return toResponse(tenantRepository.save(tenant));
+    }
+
     private void applyRequest(Tenant tenant, TenantRequest request, Room room, Bed bed) {
         tenant.setFullName(request.getFullName().trim());
         tenant.setFatherName(clean(request.getFatherName()));
@@ -201,6 +226,7 @@ public class TenantService {
                 bed != null ? bed.getId() : null,
                 bed != null ? bed.getBedNo() : null,
                 room != null ? room.getRentAmount() : null,
+                tenant.getIdProofFile(),
                 tenant.getCheckInDate(),
                 tenant.getCheckOutDate(),
                 tenant.getStatus()

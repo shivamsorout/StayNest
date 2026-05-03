@@ -150,7 +150,7 @@ public class AuthService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole(),
+                normalizeRole(user.getRole()),
                 user.getMobileNumbers()
         );
     }
@@ -183,9 +183,13 @@ public class AuthService {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getRole(),
+                normalizeRole(user.getRole()),
                 user.getMobileNumbers()
         );
+    }
+
+    private String normalizeRole(String role) {
+        return role == null ? "" : role.trim().toUpperCase(Locale.ROOT);
     }
 
     private List<String> cleanMobileNumbers(List<String> mobileNumbers) {

@@ -23,6 +23,7 @@ public class TenantResponse {
     private Long bedId;
     private String bedNo;
     private BigDecimal rentAmount;
+    private String idProofFile;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private TenantStatus status;

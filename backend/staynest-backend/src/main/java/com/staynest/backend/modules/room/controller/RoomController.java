@@ -7,6 +7,7 @@ import com.staynest.backend.modules.room.dto.RoomResponse;
 import com.staynest.backend.modules.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyRole('OWNER','ADMIN')")
 public class RoomController {
 
     private final RoomService roomService;

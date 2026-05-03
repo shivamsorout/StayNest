@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBed, FaDoorOpen, FaPlus, FaSearch, FaUserCheck, FaUserMinus, FaUsers } from "react-icons/fa";
+import { FaBed, FaDoorOpen, FaPlus, FaSearch, FaTimes, FaUserCheck, FaUserMinus, FaUsers } from "react-icons/fa";
+import { roomApi } from "../../api/rooms/roomApi";
 import { tenantApi } from "../../api/tenants/tenantApi";
 
 function TenantList() {
@@ -9,6 +10,10 @@ function TenantList() {
     const [status, setStatus] = useState("ALL");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [rooms, setRooms] = useState([]);
+    const [assignmentTenant, setAssignmentTenant] = useState(null);
+    const [assignmentForm, setAssignmentForm] = useState({ roomId: "", bedId: "" });
+    const [savingAssignment, setSavingAssignment] = useState(false);
 
     const loadTenants = async () => {
         try {
@@ -76,6 +81,41 @@ function TenantList() {
             loadTenants();
         } catch (err) {
             setError(err.message);
+        }
+    };
+
+    const openAssignmentModal = async (tenant) => {
+        try {
+            setError("");
+            const availableRooms = await roomApi.getAvailableRooms();
+            setRooms(availableRooms);
+            setAssignmentTenant(tenant);
+            setAssignmentForm({ roomId: "", bedId: "" });
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const selectedRoom = rooms.find((room) => String(room.id) === String(assignmentForm.roomId));
+    const vacantBeds = selectedRoom?.beds?.filter((bed) => bed.status === "VACANT") || [];
+
+    const handleAssignmentSubmit = async (event) => {
+        event.preventDefault();
+        if (!assignmentTenant) return;
+
+        try {
+            setSavingAssignment(true);
+            setError("");
+            await tenantApi.assignBed(assignmentTenant.id, {
+                roomId: Number(assignmentForm.roomId),
+                bedId: Number(assignmentForm.bedId),
+            });
+            setAssignmentTenant(null);
+            await loadTenants();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSavingAssignment(false);
         }
     };
 
@@ -160,7 +200,12 @@ function TenantList() {
                         <span className={`status-pill ${tenant.status.toLowerCase().replace("_", "-")}`}>
                             {tenant.status.replace("_", " ")}
                         </span>
-                        {tenant.status === "ACTIVE" && (
+                        {tenant.status === "ACTIVE" && !tenant.bedId && (
+                            <button type="button" className="secondary-action" onClick={() => openAssignmentModal(tenant)}>
+                                Assign Bed
+                            </button>
+                        )}
+                        {tenant.status === "ACTIVE" && tenant.bedId && (
                             <button type="button" className="secondary-action" onClick={() => handleCheckOut(tenant.id)}>
                                 Check Out
                             </button>
@@ -168,6 +213,64 @@ function TenantList() {
                     </article>
                 ))}
             </div>
+
+            {assignmentTenant && (
+                <div className="modal-backdrop-custom" role="dialog" aria-modal="true">
+                    <form className="payment-modal" onSubmit={handleAssignmentSubmit}>
+                        <div className="modal-heading">
+                            <div>
+                                <p className="eyebrow">Bed assignment</p>
+                                <h3>{assignmentTenant.fullName}</h3>
+                            </div>
+                            <button
+                                type="button"
+                                className="icon-close"
+                                onClick={() => setAssignmentTenant(null)}
+                                aria-label="Close assignment modal"
+                            >
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <label className="input-block">
+                            <span>Room</span>
+                            <select
+                                value={assignmentForm.roomId}
+                                onChange={(event) => setAssignmentForm({ roomId: event.target.value, bedId: "" })}
+                                required
+                            >
+                                <option value="">Select room</option>
+                                {rooms.map((room) => (
+                                    <option value={room.id} key={room.id}>
+                                        {room.pgName ? `${room.pgName} - ` : ""}{room.roomNo} ({room.vacantBeds} vacant)
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <label className="input-block">
+                            <span>Bed</span>
+                            <select
+                                value={assignmentForm.bedId}
+                                onChange={(event) => setAssignmentForm((current) => ({ ...current, bedId: event.target.value }))}
+                                disabled={!assignmentForm.roomId}
+                                required
+                            >
+                                <option value="">Select bed</option>
+                                {vacantBeds.map((bed) => (
+                                    <option value={bed.id} key={bed.id}>
+                                        {bed.bedNo}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <button type="submit" className="primary-action wide" disabled={savingAssignment}>
+                            {savingAssignment ? "Assigning..." : "Assign Bed"}
+                        </button>
+                    </form>
+                </div>
+            )}
         </div>
     );
 }

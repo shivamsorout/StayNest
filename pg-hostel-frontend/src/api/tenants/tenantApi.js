@@ -30,4 +30,9 @@ export const tenantApi = {
         const { data } = await apiClient.post(`/tenants/${id}/check-out`);
         return data;
     },
+
+    async assignBed(id, assignment) {
+        const { data } = await apiClient.post(`/tenants/${id}/assign-bed`, assignment);
+        return data;
+    },
 };

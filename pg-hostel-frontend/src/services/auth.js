@@ -1,5 +1,14 @@
 import { authApi } from "../api/auth/authApi";
 
+const readStoredUser = () => {
+    try {
+        return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+        localStorage.removeItem("user");
+        return null;
+    }
+};
+
 export const authService = {
     async login(email, password) {
         return authApi.login(email, password);
@@ -39,11 +48,10 @@ export const authService = {
     },
 
     getCurrentUser() {
-        const user = localStorage.getItem("user");
-        return user ? JSON.parse(user) : null;
+        return readStoredUser();
     },
 
     isAuthenticated() {
-        return !!localStorage.getItem("user");
+        return !!readStoredUser()?.token;
     }
 };

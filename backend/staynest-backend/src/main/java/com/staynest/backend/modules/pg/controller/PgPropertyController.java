@@ -5,6 +5,7 @@ import com.staynest.backend.modules.pg.dto.PgPropertyResponse;
 import com.staynest.backend.modules.pg.service.PgPropertyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/pgs")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyRole('OWNER','ADMIN')")
 public class PgPropertyController {
 
     private final PgPropertyService pgPropertyService;
