@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaLock, FaSignOutAlt, FaMoon, FaSun, FaUserCircle } from "react-icons/fa";
+import { FaLock, FaSignOutAlt, FaMoon, FaSun, FaUserCircle, FaUserEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth";
 
@@ -7,6 +7,14 @@ function Navbar() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const [profileForm, setProfileForm] = useState({
+        fullName: "",
+        mobileNumbers: [""],
+    });
+    const [profileError, setProfileError] = useState("");
+    const [profileSuccess, setProfileSuccess] = useState("");
+    const [savingProfile, setSavingProfile] = useState(false);
     const [passwordForm, setPasswordForm] = useState({
         currentPassword: "",
         newPassword: "",
@@ -36,6 +44,46 @@ function Navbar() {
             confirmPassword: "",
         });
         setIsPasswordModalOpen(true);
+    };
+
+    const openProfileModal = () => {
+        setIsProfileOpen(false);
+        setProfileError("");
+        setProfileSuccess("");
+        const mobileNumbers = user?.mobileNumbers?.length ? user.mobileNumbers : [""];
+        setProfileForm({
+            fullName: user?.fullName || "",
+            mobileNumbers,
+        });
+        setIsProfileModalOpen(true);
+    };
+
+    const updateMobileNumber = (index, value) => {
+        setProfileForm((current) => ({
+            ...current,
+            mobileNumbers: current.mobileNumbers.map((item, itemIndex) => (
+                itemIndex === index ? value.replace(/\D/g, "").slice(0, 10) : item
+            )),
+        }));
+    };
+
+    const handleProfileSave = async (event) => {
+        event.preventDefault();
+        setProfileError("");
+        setProfileSuccess("");
+
+        try {
+            setSavingProfile(true);
+            await authService.updateProfile({
+                fullName: profileForm.fullName,
+                mobileNumbers: profileForm.mobileNumbers.filter((mobile) => mobile.trim()),
+            });
+            setProfileSuccess("Profile updated successfully.");
+        } catch (err) {
+            setProfileError(err.message || "Unable to update profile.");
+        } finally {
+            setSavingProfile(false);
+        }
     };
 
     const handlePasswordChange = async (event) => {
@@ -116,6 +164,14 @@ function Navbar() {
 
                         <ul className="list-unstyled mb-0 mt-2">
                             <li>
+                                <button
+                                    className="dropdown-item d-flex align-items-center gap-3 px-4 py-2"
+                                    onClick={openProfileModal}
+                                >
+                                    <FaUserEdit className="text-secondary" size={18} /> Edit Profile
+                                </button>
+                            </li>
+                            <li>
                                 <button 
                                     className="dropdown-item d-flex align-items-center gap-3 px-4 py-2"
                                     onClick={() => setIsDarkMode(!isDarkMode)}
@@ -192,6 +248,72 @@ function Navbar() {
 
                         <button type="submit" className="primary-action wide" disabled={savingPassword}>
                             {savingPassword ? "Changing..." : "Change Password"}
+                        </button>
+                    </form>
+                </div>
+            )}
+
+            {isProfileModalOpen && (
+                <div className="modal-backdrop-custom" role="presentation">
+                    <form className="password-modal" onSubmit={handleProfileSave}>
+                        <div className="modal-heading">
+                            <div>
+                                <p className="eyebrow">Account profile</p>
+                                <h3>Edit Profile</h3>
+                            </div>
+                            <button type="button" className="icon-close" onClick={() => setIsProfileModalOpen(false)}>x</button>
+                        </div>
+
+                        {profileError && <div className="alert-panel">{profileError}</div>}
+                        {profileSuccess && <div className="success-panel">{profileSuccess}</div>}
+
+                        <label className="input-block">
+                            <span>Full Name</span>
+                            <input
+                                value={profileForm.fullName}
+                                onChange={(event) => setProfileForm((prev) => ({ ...prev, fullName: event.target.value }))}
+                                required
+                            />
+                        </label>
+
+                        <div className="input-block">
+                            <span>Mobile Numbers</span>
+                            {profileForm.mobileNumbers.map((mobile, index) => (
+                                <div className="inline-field-row" key={`mobile-${index}`}>
+                                    <input
+                                        value={mobile}
+                                        maxLength="10"
+                                        onChange={(event) => updateMobileNumber(index, event.target.value)}
+                                        placeholder="9876543210"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="icon-close"
+                                        onClick={() => setProfileForm((prev) => ({
+                                            ...prev,
+                                            mobileNumbers: prev.mobileNumbers.filter((_, itemIndex) => itemIndex !== index),
+                                        }))}
+                                        disabled={profileForm.mobileNumbers.length === 1}
+                                        aria-label="Remove mobile number"
+                                    >
+                                        <FaTrash size={13} />
+                                    </button>
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                className="secondary-action"
+                                onClick={() => setProfileForm((prev) => ({
+                                    ...prev,
+                                    mobileNumbers: [...prev.mobileNumbers, ""],
+                                }))}
+                            >
+                                <FaPlus /> Add Number
+                            </button>
+                        </div>
+
+                        <button type="submit" className="primary-action wide" disabled={savingProfile}>
+                            {savingProfile ? "Saving..." : "Save Profile"}
                         </button>
                     </form>
                 </div>

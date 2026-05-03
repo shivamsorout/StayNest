@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaChevronLeft, FaComments, FaDoorOpen, FaHome, FaMoneyBillWave, FaPaperPlane, FaTimes, FaUsers } from "react-icons/fa";
+import { FaBars, FaChevronLeft, FaComments, FaDoorOpen, FaHome, FaIdBadge, FaMoneyBillWave, FaPaperPlane, FaTimes, FaUsers } from "react-icons/fa";
 
 function Sidebar({ isOpen, toggleSidebar }) {
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -98,6 +98,12 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 <li>
                     <Link to="/rent" className="nav-link menu-link">
                         <FaMoneyBillWave size={20} /> <span className={isOpen ? "" : "d-none"}>Rent</span>
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/my-profile" className="nav-link menu-link">
+                        <FaIdBadge size={20} /> <span className={isOpen ? "" : "d-none"}>My Profile</span>
                     </Link>
                 </li>
 

@@ -1,15 +1,14 @@
 package com.staynest.backend.modules.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponse {
-
-    private String token;
+public class UserProfileResponse {
     private Long id;
     private String fullName;
     private String email;

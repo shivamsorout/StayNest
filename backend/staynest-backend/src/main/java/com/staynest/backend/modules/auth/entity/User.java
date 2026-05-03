@@ -4,6 +4,9 @@ import com.staynest.backend.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -21,6 +24,11 @@ public class User extends BaseEntity {
 
     @Column(unique = true)
     private String email;
+
+    @ElementCollection
+    @CollectionTable(name = "user_mobile_numbers", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "mobile_number")
+    private List<String> mobileNumbers = new ArrayList<>();
 
     private String password;
 

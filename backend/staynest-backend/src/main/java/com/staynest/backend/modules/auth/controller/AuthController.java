@@ -6,6 +6,8 @@ import com.staynest.backend.modules.auth.dto.LoginRequest;
 import com.staynest.backend.modules.auth.dto.LoginResponse;
 import com.staynest.backend.modules.auth.dto.ResetPasswordRequest;
 import com.staynest.backend.modules.auth.dto.SignupRequest;
+import com.staynest.backend.modules.auth.dto.UpdateProfileRequest;
+import com.staynest.backend.modules.auth.dto.UserProfileResponse;
 import com.staynest.backend.modules.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,16 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         return ResponseEntity.ok(authService.changePassword(request));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getProfile() {
+        return ResponseEntity.ok(authService.getCurrentProfile());
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<UserProfileResponse> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        return ResponseEntity.ok(authService.updateProfile(request));
     }
 
     @PostMapping("/signup")

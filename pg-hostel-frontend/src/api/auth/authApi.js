@@ -9,8 +9,8 @@ export const authApi = {
         return data;
     },
 
-    async signup(fullName, email, password) {
-        const { data } = await apiClient.post("/auth/signup", { fullName, email, password });
+    async signup(fullName, email, password, mobileNumbers = []) {
+        const { data } = await apiClient.post("/auth/signup", { fullName, email, password, mobileNumbers });
         return data;
     },
 
@@ -26,6 +26,16 @@ export const authApi = {
 
     async changePassword(payload) {
         const { data } = await apiClient.post("/auth/change-password", payload);
+        return data;
+    },
+
+    async getProfile() {
+        const { data } = await apiClient.get("/auth/profile");
+        return data;
+    },
+
+    async updateProfile(payload) {
+        const { data } = await apiClient.put("/auth/profile", payload);
         return data;
     },
 };

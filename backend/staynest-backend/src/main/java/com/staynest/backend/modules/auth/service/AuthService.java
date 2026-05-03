@@ -6,6 +6,8 @@ import com.staynest.backend.modules.auth.dto.LoginRequest;
 import com.staynest.backend.modules.auth.dto.LoginResponse;
 import com.staynest.backend.modules.auth.dto.ResetPasswordRequest;
 import com.staynest.backend.modules.auth.dto.SignupRequest;
+import com.staynest.backend.modules.auth.dto.UpdateProfileRequest;
+import com.staynest.backend.modules.auth.dto.UserProfileResponse;
 import com.staynest.backend.modules.auth.entity.User;
 import com.staynest.backend.modules.auth.repository.UserRepository;
 import com.staynest.backend.security.JwtUtil;
@@ -16,9 +18,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -121,6 +127,7 @@ public class AuthService {
         User user = new User();
         user.setFullName(request.getFullName().trim());
         user.setEmail(request.getEmail());
+        user.setMobileNumbers(cleanMobileNumbers(request.getMobileNumbers()));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("ADMIN"); // Default role
 
@@ -142,7 +149,56 @@ public class AuthService {
                 token,
                 user.getId(),
                 user.getFullName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole(),
+                user.getMobileNumbers()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileResponse getCurrentProfile() {
+        return toProfileResponse(getAuthenticatedUser());
+    }
+
+    @Transactional
+    public UserProfileResponse updateProfile(UpdateProfileRequest request) {
+        User user = getAuthenticatedUser();
+        user.setFullName(request.getFullName().trim());
+        user.setMobileNumbers(cleanMobileNumbers(request.getMobileNumbers()));
+        return toProfileResponse(userRepository.save(user));
+    }
+
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        return userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
+
+    private UserProfileResponse toProfileResponse(User user) {
+        return new UserProfileResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getRole(),
+                user.getMobileNumbers()
+        );
+    }
+
+    private List<String> cleanMobileNumbers(List<String> mobileNumbers) {
+        if (mobileNumbers == null) {
+            return new ArrayList<>();
+        }
+
+        LinkedHashSet<String> uniqueNumbers = new LinkedHashSet<>();
+        for (String mobileNumber : mobileNumbers) {
+            if (mobileNumber != null && !mobileNumber.isBlank()) {
+                uniqueNumbers.add(mobileNumber.trim());
+            }
+        }
+        return new ArrayList<>(uniqueNumbers);
     }
 }

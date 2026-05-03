@@ -5,6 +5,7 @@ import { authService } from "../../services/auth";
 function Signup() {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
+    const [mobileNumber, setMobileNumber] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -17,7 +18,7 @@ function Signup() {
         setSuccess("");
         setLoading(true);
         try {
-            await authService.signup(fullName, email, password);
+            await authService.signup(fullName, email, password, mobileNumber ? [mobileNumber] : []);
             setSuccess("Account created successfully! Redirecting to login...");
             setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
@@ -58,6 +59,18 @@ function Signup() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                        />
+                    </div>
+
+                    <div className="form-group-custom">
+                        <label>Mobile Number</label>
+                        <input
+                            type="tel"
+                            className="form-control-custom"
+                            placeholder="9876543210"
+                            value={mobileNumber}
+                            maxLength="10"
+                            onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ""))}
                         />
                     </div>
 

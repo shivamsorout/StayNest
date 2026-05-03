@@ -1,7 +1,9 @@
 package com.staynest.backend.modules.tenant.controller;
 
 import com.staynest.backend.modules.tenant.dto.TenantRequest;
+import com.staynest.backend.modules.tenant.dto.TenantProfileResponse;
 import com.staynest.backend.modules.tenant.dto.TenantResponse;
+import com.staynest.backend.modules.tenant.service.TenantProfileService;
 import com.staynest.backend.modules.tenant.service.TenantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class TenantController {
 
     private final TenantService tenantService;
+    private final TenantProfileService tenantProfileService;
 
     @GetMapping
     public ResponseEntity<List<TenantResponse>> getAllTenants() {
@@ -53,5 +56,10 @@ public class TenantController {
     @GetMapping("/active")
     public ResponseEntity<List<TenantResponse>> getActiveTenants() {
         return ResponseEntity.ok(tenantService.getActiveTenants());
+    }
+
+    @GetMapping("/me/profile")
+    public ResponseEntity<TenantProfileResponse> getCurrentTenantProfile() {
+        return ResponseEntity.ok(tenantProfileService.getCurrentTenantProfile());
     }
 }

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { FaCalendarAlt, FaCheck, FaClock, FaMoneyBillWave, FaReceipt, FaSearch, FaWallet } from "react-icons/fa";
+import { FaBolt, FaCalendarAlt, FaCheck, FaClock, FaMoneyBillWave, FaReceipt, FaSearch, FaWallet } from "react-icons/fa";
+import { electricityApi } from "../api/electricity/electricityApi";
 import { rentApi } from "../api/rent/rentApi";
+import { roomApi } from "../api/rooms/roomApi";
 
 const statusOptions = ["ALL", "PENDING", "PAID", "PARTIAL", "OVERDUE"];
 const paymentModes = ["CASH", "UPI", "BANK_TRANSFER", "CARD", "OTHER"];
@@ -13,6 +15,16 @@ function RentList() {
     const [month, setMonth] = useState(currentDate.getMonth() + 1);
     const [year, setYear] = useState(currentDate.getFullYear());
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const [rooms, setRooms] = useState([]);
+    const [electricityReadings, setElectricityReadings] = useState([]);
+    const [electricityForm, setElectricityForm] = useState({
+        roomId: "",
+        month: currentDate.getMonth() + 1,
+        year: currentDate.getFullYear(),
+        previousUnits: "",
+        currentUnits: "",
+        unitRate: "8",
+    });
     const [paymentForm, setPaymentForm] = useState({
         paymentMode: "UPI",
         paidDate: currentDate.toISOString().slice(0, 10),
@@ -36,14 +48,24 @@ function RentList() {
         }
     };
 
+    const loadElectricityReadings = async () => {
+        setElectricityReadings(await electricityApi.getReadings());
+    };
+
     useEffect(() => {
         let isActive = true;
 
         const fetchRentPayments = async () => {
             try {
-                const data = await rentApi.getRentPayments();
+                const [data, roomData, readingData] = await Promise.all([
+                    rentApi.getRentPayments(),
+                    roomApi.getRooms(),
+                    electricityApi.getReadings(),
+                ]);
                 if (isActive) {
                     setRentPayments(data);
+                    setRooms(roomData);
+                    setElectricityReadings(readingData);
                 }
             } catch (err) {
                 if (isActive) {
@@ -130,6 +152,35 @@ function RentList() {
             setSelectedPayment(null);
             setNotice("Payment marked as paid.");
             await loadRentPayments();
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleElectricitySubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            setSaving(true);
+            setError("");
+            setNotice("");
+            await electricityApi.saveReading({
+                roomId: Number(electricityForm.roomId),
+                month: Number(electricityForm.month),
+                year: Number(electricityForm.year),
+                previousUnits: Number(electricityForm.previousUnits),
+                currentUnits: Number(electricityForm.currentUnits),
+                unitRate: electricityForm.unitRate === "" ? null : Number(electricityForm.unitRate),
+            });
+            setNotice("Electricity reading saved and tenant shares recalculated.");
+            setElectricityForm((current) => ({
+                ...current,
+                previousUnits: "",
+                currentUnits: "",
+            }));
+            await loadElectricityReadings();
         } catch (err) {
             setError(err.message);
         } finally {
@@ -230,6 +281,79 @@ function RentList() {
 
             {error && <div className="alert-panel">{error}</div>}
             {notice && <div className="success-panel">{notice}</div>}
+
+            <form className="electricity-panel" onSubmit={handleElectricitySubmit}>
+                <div>
+                    <p className="eyebrow">Electricity billing</p>
+                    <h3>Add Monthly Units</h3>
+                </div>
+                <select
+                    value={electricityForm.roomId}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, roomId: event.target.value }))}
+                    required
+                >
+                    <option value="">Room</option>
+                    {rooms.map((room) => (
+                        <option key={room.id} value={room.id}>{room.roomNo}</option>
+                    ))}
+                </select>
+                <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={electricityForm.month}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, month: event.target.value }))}
+                    aria-label="Electricity month"
+                />
+                <input
+                    type="number"
+                    min="2024"
+                    value={electricityForm.year}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, year: event.target.value }))}
+                    aria-label="Electricity year"
+                />
+                <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Previous units"
+                    value={electricityForm.previousUnits}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, previousUnits: event.target.value }))}
+                    required
+                />
+                <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Current units"
+                    value={electricityForm.currentUnits}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, currentUnits: event.target.value }))}
+                    required
+                />
+                <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Rate"
+                    value={electricityForm.unitRate}
+                    onChange={(event) => setElectricityForm((prev) => ({ ...prev, unitRate: event.target.value }))}
+                />
+                <button type="submit" className="primary-action" disabled={saving}>
+                    <FaBolt /> Save
+                </button>
+            </form>
+
+            {electricityReadings.length > 0 && (
+                <div className="electricity-summary">
+                    {electricityReadings.slice(0, 4).map((reading) => (
+                        <article key={reading.id}>
+                            <strong>Room {reading.roomNo}</strong>
+                            <span>{formatCurrency(reading.totalAmount)} total</span>
+                            <b>{formatCurrency(reading.tenantShare)} / tenant</b>
+                        </article>
+                    ))}
+                </div>
+            )}
 
             <div className="data-panel">
                 {loading && <div className="empty-state">Loading rent records...</div>}

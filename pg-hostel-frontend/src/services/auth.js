@@ -5,8 +5,8 @@ export const authService = {
         return authApi.login(email, password);
     },
 
-    async signup(fullName, email, password) {
-        return authApi.signup(fullName, email, password);
+    async signup(fullName, email, password, mobileNumbers) {
+        return authApi.signup(fullName, email, password, mobileNumbers);
     },
     
     async forgotPassword(payload) {
@@ -19,6 +19,19 @@ export const authService = {
 
     async changePassword(payload) {
         return authApi.changePassword(payload);
+    },
+
+    async getProfile() {
+        return authApi.getProfile();
+    },
+
+    async updateProfile(payload) {
+        const profile = await authApi.updateProfile(payload);
+        const user = this.getCurrentUser();
+        if (user) {
+            localStorage.setItem("user", JSON.stringify({ ...user, ...profile }));
+        }
+        return profile;
     },
 
     logout() {

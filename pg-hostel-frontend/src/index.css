@@ -1077,6 +1077,13 @@ body.dark-mode .chatbot-input input {
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
+.inline-field-row {
+    align-items: center;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: 1fr 38px;
+}
+
 .bed-preview {
     background: #f8fafc;
     border: 1px dashed #cbd5e1;
@@ -1111,7 +1118,10 @@ body.dark-mode .page-header,
 body.dark-mode .metric-card,
 body.dark-mode .toolbar-panel,
 body.dark-mode .room-card,
-body.dark-mode .form-panel {
+body.dark-mode .form-panel,
+body.dark-mode .electricity-panel,
+body.dark-mode .electricity-summary article,
+body.dark-mode .history-panel {
     background: #1e293b;
     border-color: #334155;
 }
@@ -1119,6 +1129,8 @@ body.dark-mode .form-panel {
 body.dark-mode .page-header h2,
 body.dark-mode .metric-card strong,
 body.dark-mode .room-card h3,
+body.dark-mode .electricity-panel h3,
+body.dark-mode .history-panel h3,
 body.dark-mode .search-control input,
 body.dark-mode .input-block input {
     color: #f8fafc;
@@ -1138,7 +1150,9 @@ body.dark-mode .segmented-control,
 body.dark-mode .input-block input,
 body.dark-mode .input-block select,
 body.dark-mode .input-block textarea,
-body.dark-mode .bed-preview {
+body.dark-mode .bed-preview,
+body.dark-mode .electricity-panel input,
+body.dark-mode .electricity-panel select {
     background: #0f172a;
     border-color: #334155;
 }
@@ -1243,6 +1257,84 @@ body.dark-mode .tenant-meta {
     height: 44px;
     padding: 0 12px;
     width: 88px;
+}
+
+.electricity-panel {
+    align-items: end;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(170px, 1.2fr) 120px 72px 92px repeat(3, minmax(120px, 1fr)) 96px;
+    padding: 16px;
+}
+
+.electricity-panel h3,
+.history-panel h3 {
+    color: #0f172a;
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin: 0;
+}
+
+.electricity-panel input,
+.electricity-panel select {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    color: #0f172a;
+    min-height: 44px;
+    outline: none;
+    padding: 0 12px;
+}
+
+.electricity-summary,
+.profile-history-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.electricity-summary article,
+.history-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    padding: 16px;
+}
+
+.electricity-summary article,
+.history-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.electricity-summary span,
+.history-row span {
+    color: #64748b;
+    font-weight: 700;
+}
+
+.profile-history-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.history-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-row {
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr auto auto;
+    padding-top: 12px;
 }
 
 .success-panel {
@@ -1370,7 +1462,9 @@ body.dark-mode .rent-generate input {
 
 body.dark-mode .rent-main span,
 body.dark-mode .rent-meta span,
-body.dark-mode .payment-mode {
+body.dark-mode .payment-mode,
+body.dark-mode .electricity-summary span,
+body.dark-mode .history-row span {
     color: #cbd5e1;
 }
 
@@ -1397,7 +1491,11 @@ body.dark-mode .rent-generate input {
     .room-grid,
     .form-grid,
     .tenant-row,
-    .rent-row {
+    .rent-row,
+    .electricity-panel,
+    .electricity-summary,
+    .profile-history-grid,
+    .history-row {
         grid-template-columns: 1fr;
     }
 

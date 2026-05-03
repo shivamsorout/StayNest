@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import TenantList from "./pages/tenants/TenantList";
 import AddTenant from "./pages/tenants/AddTenant";
 import RentList from "./pages/RentList";
+import TenantProfile from "./pages/TenantProfile";
 import RoomList from "./pages/rooms/RoomList";
 import AddRoom from "./pages/rooms/AddRoom";
 import Login from "./pages/auth/Login";
@@ -44,6 +45,11 @@ function App() {
                 <Route path="/rent" element={
                     <ProtectedRoute>
                         <RentList />
+                    </ProtectedRoute>
+                } />
+                <Route path="/my-profile" element={
+                    <ProtectedRoute>
+                        <TenantProfile />
                     </ProtectedRoute>
                 } />
                 <Route path="/rooms" element={
