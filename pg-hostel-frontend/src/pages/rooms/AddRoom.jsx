@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBed, FaBuilding, FaDoorOpen, FaSave } from "react-icons/fa";
 import { roomApi } from "../../api/rooms/roomApi";
+import { pgApi } from "../../api/pgs/pgApi";
 
 function AddRoom() {
     const navigate = useNavigate();
@@ -10,7 +11,10 @@ function AddRoom() {
         floor: "",
         capacity: "",
         rentAmount: "",
+        pgPropertyId: "",
+        newPgName: "",
     });
+    const [pgs, setPgs] = useState([]);
     const [error, setError] = useState("");
     const [saving, setSaving] = useState(false);
 
@@ -28,8 +32,48 @@ function AddRoom() {
                 floor: Number(form.floor),
                 capacity: Number(form.capacity),
                 rentAmount: Number(form.rentAmount),
+                pgPropertyId: form.pgPropertyId ? Number(form.pgPropertyId) : null,
             });
             navigate("/rooms");
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    useEffect(() => {
+        let isActive = true;
+
+        const loadPgs = async () => {
+            try {
+                const data = await pgApi.getPgs();
+                if (isActive) {
+                    setPgs(data);
+                }
+            } catch {
+                if (isActive) {
+                    setPgs([]);
+                }
+            }
+        };
+
+        loadPgs();
+
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
+    const handleCreatePg = async () => {
+        if (!form.newPgName.trim()) return;
+
+        try {
+            setSaving(true);
+            setError("");
+            const createdPg = await pgApi.createPg({ name: form.newPgName });
+            setPgs((current) => [...current, createdPg]);
+            setForm((current) => ({ ...current, pgPropertyId: String(createdPg.id), newPgName: "" }));
         } catch (err) {
             setError(err.message);
         } finally {
@@ -95,6 +139,30 @@ function AddRoom() {
                             required
                         />
                     </label>
+
+                    <label className="input-block">
+                        <span><FaBuilding /> PG Property</span>
+                        <select value={form.pgPropertyId} onChange={(event) => updateField("pgPropertyId", event.target.value)}>
+                            <option value="">No PG selected</option>
+                            {pgs.map((pg) => (
+                                <option key={pg.id} value={pg.id}>{pg.name}</option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <div className="input-block">
+                        <span>Create PG</span>
+                        <div className="inline-action-row">
+                            <input
+                                value={form.newPgName}
+                                onChange={(event) => updateField("newPgName", event.target.value)}
+                                placeholder="StayNest Boys PG"
+                            />
+                            <button type="button" className="secondary-action" onClick={handleCreatePg} disabled={saving}>
+                                Add
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="bed-preview">

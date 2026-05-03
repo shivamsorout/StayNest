@@ -9,8 +9,8 @@ export const authApi = {
         return data;
     },
 
-    async signup(fullName, email, password, mobileNumbers = []) {
-        const { data } = await apiClient.post("/auth/signup", { fullName, email, password, mobileNumbers });
+    async signup(fullName, email, password, mobileNumbers = [], accountType = "OWNER") {
+        const { data } = await apiClient.post("/auth/signup", { fullName, email, password, mobileNumbers, accountType });
         return data;
     },
 

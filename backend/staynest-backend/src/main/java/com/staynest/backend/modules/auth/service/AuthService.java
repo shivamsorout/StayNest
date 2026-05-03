@@ -129,7 +129,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setMobileNumbers(cleanMobileNumbers(request.getMobileNumbers()));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole("ADMIN"); // Default role
+        user.setRole(resolveAccountType(request.getAccountType()));
 
         userRepository.save(user);
         return "User registered successfully!";
@@ -201,4 +201,17 @@ public class AuthService {
         }
         return new ArrayList<>(uniqueNumbers);
     }
+
+    private String resolveAccountType(String accountType) {
+        if (accountType == null || accountType.isBlank()) {
+            return "OWNER";
+        }
+
+        String value = accountType.trim().toUpperCase(Locale.ROOT);
+        if (!"OWNER".equals(value) && !"TENANT".equals(value)) {
+            throw new RuntimeException("Account type must be OWNER or TENANT");
+        }
+        return value;
+    }
+
 }

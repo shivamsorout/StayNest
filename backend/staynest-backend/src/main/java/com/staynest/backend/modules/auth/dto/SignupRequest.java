@@ -28,4 +28,6 @@ public class SignupRequest {
     private String password;
 
     private List<@Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be 10 digits") String> mobileNumbers;
+
+    private String accountType;
 }

@@ -18,6 +18,8 @@ public class RoomResponse {
     private Integer occupiedCount;
     private Integer vacantCount;
     private BigDecimal rentAmount;
+    private Long pgPropertyId;
+    private String pgName;
     private RoomStatus status;
     private List<BedResponse> beds;
 }

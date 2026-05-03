@@ -27,4 +27,6 @@ public class RoomRequest {
     @NotNull(message = "Rent amount is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Rent amount must be greater than 0")
     private BigDecimal rentAmount;
+
+    private Long pgPropertyId;
 }

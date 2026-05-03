@@ -5,8 +5,8 @@ export const authService = {
         return authApi.login(email, password);
     },
 
-    async signup(fullName, email, password, mobileNumbers) {
-        return authApi.signup(fullName, email, password, mobileNumbers);
+    async signup(fullName, email, password, mobileNumbers, accountType) {
+        return authApi.signup(fullName, email, password, mobileNumbers, accountType);
     },
     
     async forgotPassword(payload) {

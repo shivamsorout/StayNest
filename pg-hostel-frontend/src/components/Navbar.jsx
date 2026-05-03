@@ -5,7 +5,7 @@ import { authService } from "../services/auth";
 
 function Navbar() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem("staynest-theme") === "dark");
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [profileForm, setProfileForm] = useState({
@@ -119,8 +119,10 @@ function Navbar() {
     useEffect(() => {
         if (isDarkMode) {
             document.body.classList.add("dark-mode");
+            localStorage.setItem("staynest-theme", "dark");
         } else {
             document.body.classList.remove("dark-mode");
+            localStorage.setItem("staynest-theme", "light");
         }
     }, [isDarkMode]);
 

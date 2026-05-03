@@ -1,6 +1,7 @@
 package com.staynest.backend.modules.room.entity;
 
 import com.staynest.backend.common.BaseEntity;
+import com.staynest.backend.modules.pg.entity.PgProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Room extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String roomNo;
 
     @Column(nullable = false)
@@ -34,6 +35,10 @@ public class Room extends BaseEntity {
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal rentAmount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pg_property_id")
+    private PgProperty pgProperty;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

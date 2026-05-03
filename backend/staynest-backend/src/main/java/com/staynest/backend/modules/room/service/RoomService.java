@@ -4,6 +4,8 @@ import com.staynest.backend.modules.room.dto.BedResponse;
 import com.staynest.backend.modules.room.dto.BedStatusRequest;
 import com.staynest.backend.modules.room.dto.RoomRequest;
 import com.staynest.backend.modules.room.dto.RoomResponse;
+import com.staynest.backend.modules.pg.entity.PgProperty;
+import com.staynest.backend.modules.pg.repository.PgPropertyRepository;
 import com.staynest.backend.modules.room.entity.Bed;
 import com.staynest.backend.modules.room.entity.BedStatus;
 import com.staynest.backend.modules.room.entity.Room;
@@ -24,6 +26,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final BedRepository bedRepository;
+    private final PgPropertyRepository pgPropertyRepository;
 
     @Transactional(readOnly = true)
     public List<RoomResponse> getAllRooms() {
@@ -43,7 +46,9 @@ public class RoomService {
     @Transactional
     public RoomResponse createRoom(RoomRequest request) {
         String roomNo = request.getRoomNo().trim();
-        if (roomRepository.existsByRoomNoIgnoreCase(roomNo)) {
+        PgProperty pgProperty = findPgProperty(request.getPgPropertyId());
+
+        if (roomNoExistsInPg(roomNo, pgProperty, null)) {
             throw new RuntimeException("Room number already exists");
         }
 
@@ -52,6 +57,7 @@ public class RoomService {
         room.setFloor(request.getFloor());
         room.setCapacity(request.getCapacity());
         room.setRentAmount(request.getRentAmount());
+        room.setPgProperty(pgProperty);
         room.setOccupiedCount(0);
         room.setStatus(RoomStatus.AVAILABLE);
 
@@ -63,8 +69,9 @@ public class RoomService {
     public RoomResponse updateRoom(Long id, RoomRequest request) {
         Room room = findRoom(id);
         String roomNo = request.getRoomNo().trim();
+        PgProperty pgProperty = findPgProperty(request.getPgPropertyId());
 
-        if (!room.getRoomNo().equalsIgnoreCase(roomNo) && roomRepository.existsByRoomNoIgnoreCase(roomNo)) {
+        if (roomNoExistsInPg(roomNo, pgProperty, id)) {
             throw new RuntimeException("Room number already exists");
         }
 
@@ -75,6 +82,7 @@ public class RoomService {
         room.setRoomNo(roomNo);
         room.setFloor(request.getFloor());
         room.setRentAmount(request.getRentAmount());
+        room.setPgProperty(pgProperty);
         resizeBeds(room, request.getCapacity());
         room.setCapacity(request.getCapacity());
         refreshStatus(room);
@@ -118,6 +126,25 @@ public class RoomService {
 
     private Room findRoom(Long id) {
         return roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Room not found"));
+    }
+
+    private PgProperty findPgProperty(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return pgPropertyRepository.findById(id).orElseThrow(() -> new RuntimeException("PG property not found"));
+    }
+
+    private boolean roomNoExistsInPg(String roomNo, PgProperty pgProperty, Long currentRoomId) {
+        if (pgProperty == null) {
+            return currentRoomId == null
+                    ? roomRepository.existsByRoomNoIgnoreCaseAndPgPropertyIsNull(roomNo)
+                    : roomRepository.existsByRoomNoIgnoreCaseAndPgPropertyIsNullAndIdNot(roomNo, currentRoomId);
+        }
+
+        return currentRoomId == null
+                ? roomRepository.existsByRoomNoIgnoreCaseAndPgPropertyId(roomNo, pgProperty.getId())
+                : roomRepository.existsByRoomNoIgnoreCaseAndPgPropertyIdAndIdNot(roomNo, pgProperty.getId(), currentRoomId);
     }
 
     private List<Bed> buildBeds(Room room, int capacity) {
@@ -183,6 +210,8 @@ public class RoomService {
                 room.getOccupiedCount(),
                 room.getCapacity() - room.getOccupiedCount(),
                 room.getRentAmount(),
+                room.getPgProperty() != null ? room.getPgProperty().getId() : null,
+                room.getPgProperty() != null ? room.getPgProperty().getName() : null,
                 room.getStatus(),
                 beds
         );

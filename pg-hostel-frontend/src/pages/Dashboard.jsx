@@ -40,7 +40,7 @@ function Dashboard() {
             </div>
 
             <div className="dashboard-card card-grad-5 mt-5">
-                <h5 className="mb-3 text-dark">Recent Activity</h5>
+                <h5 className="dashboard-activity-title mb-3">Recent Activity</h5>
                 <p>3 new tenants added today.</p>
                 <p className="mb-0">2 rents collected.</p>
             </div>

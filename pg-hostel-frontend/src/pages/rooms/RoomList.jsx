@@ -177,6 +177,7 @@ function RoomList() {
                                 <span>Floor {room.floor}</span>
                                 <span>INR {Number(room.rentAmount).toLocaleString()} / month</span>
                             </div>
+                            {room.pgName && <div className="room-meta"><span>PG</span><strong>{room.pgName}</strong></div>}
 
                             <div className="occupancy-row">
                                 <span>{room.occupiedCount} occupied</span>
